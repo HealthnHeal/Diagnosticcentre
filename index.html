@@ -14,7 +14,7 @@
       text-align: center;
     }
 
-    body.sidebar-open {
+    body.lock-scroll {
       overflow: hidden;
     }
 
@@ -174,7 +174,6 @@
       color: white;
     }
 
-    /* Slide-in Update Panel */
     .update-panel {
       position: fixed;
       top: 0;
@@ -225,7 +224,6 @@
   <div class="sidebar" id="sidebar">
     <div class="close-btn" onclick="toggleSidebar()">×</div>
     <h2>Quick Links</h2>
-
     <strong>Follow our socials</strong>
     <a href="https://www.facebook.com/profile.php?id=61578329150340" target="_blank">Facebook</a>
     <a href="https://www.instagram.com/healthnhealdiagnosticcentre?igsh=MmJidjdrMWpob2gw" target="_blank">Instagram</a>
@@ -265,7 +263,6 @@
       <source src="HealthnHealintro.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-
     <img src="poster.jpg" alt="Health n Heal Poster" />
     <img src="image1.jpg" alt="Pharmacy Image 1" />
     <img src="image2.jpg" alt="Pharmacy Image 2" />
@@ -294,29 +291,39 @@
     const body = document.body;
 
     function toggleSidebar(event) {
+      event.stopPropagation();
       sidebar.classList.toggle('open');
-      body.classList.toggle('sidebar-open');
-      event && event.stopPropagation();
+      updatePanel.classList.remove('open');
+      if (sidebar.classList.contains('open')) {
+        body.classList.add('lock-scroll');
+      } else {
+        body.classList.remove('lock-scroll');
+      }
     }
 
     function openUpdate(event) {
       event.preventDefault();
+      event.stopPropagation();
       updatePanel.classList.add('open');
-      body.classList.add('sidebar-open');
+      sidebar.classList.remove('open');
+      body.classList.add('lock-scroll');
     }
 
     function closeUpdate() {
       updatePanel.classList.remove('open');
-      body.classList.remove('sidebar-open');
+      body.classList.remove('lock-scroll');
     }
 
-    document.addEventListener('click', function(e) {
-      const isInsideSidebar = sidebar.contains(e.target) || e.target.classList.contains('menu-icon');
-      const isInsidePanel = updatePanel.contains(e.target);
-      if (!isInsideSidebar && !isInsidePanel) {
+    document.addEventListener('click', function (e) {
+      if (!sidebar.contains(e.target) && !e.target.classList.contains('menu-icon')) {
         sidebar.classList.remove('open');
+      }
+      if (!updatePanel.contains(e.target) && !e.target.closest('.update-panel')) {
         updatePanel.classList.remove('open');
-        body.classList.remove('sidebar-open');
+      }
+
+      if (!sidebar.classList.contains('open') && !updatePanel.classList.contains('open')) {
+        body.classList.remove('lock-scroll');
       }
     });
   </script>
